@@ -78,13 +78,27 @@ const run = async () => {
 
     // update user to database
     app.put("/users", async (req, res) => {
-      console.log(req.headers.email, req.body);
       const options = { upsert: true };
       const query = { email: req.headers.email };
       const updateUser = {
         $set: req.body,
       };
       const result = await userCollection.updateOne(query, updateUser, options);
+      res.json(result);
+    });
+
+    // update like
+    app.put("/likes/:id", async (req, res) => {
+      const likes = req.body;
+      const id = req.params.id;
+      const options = { upsert: true };
+      const query = { _id: ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          like: likes,
+        },
+      };
+      const result = await postCollection.updateOne(query, updateDoc, options);
       res.json(result);
     });
   } finally {
